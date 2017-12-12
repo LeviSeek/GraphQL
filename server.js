@@ -2,22 +2,28 @@ import express from 'express';
 import {MongoClient} from 'mongodb';
 
 let app = express();
+let dbUrl = 'mongodb://levijs:14DianaDrive@ds137826.mlab.com:37826/levijs';
+let db;
 
 app.use(express.static('public'));
 
-app.listen(3000);
+MongoClient.connect(dbUrl, (err, database) => {
+  if (err) {
+    console.log('cound not connect');
+    throw err;
+  }
 
-// using 'mongodb://localhost:27017/myLocalDb'
-// MongoClient.connect(process.env.MONGO_URL, (err, database) => {
-//   if (err) {
-//     throw err;
-//   }
-//
-//   database.collection("links").find({}).toArray((err, links) => {
-//     if (err) {
-//       throw err;
-//     }
-//
-//     console.log("links for mongo:", link);
-//   });
-// });
+  db = database;
+  app.listen(3000, () => console.log('listening on port 3000'));
+});
+
+app.get('/data/links', (req, res) => {
+  db.collection("links").find({}).toArray((err, links) => {
+    if (err) {
+      console.log("db collection error:", err);
+      throw err;
+    }
+
+    res.json(links);
+  });
+});
