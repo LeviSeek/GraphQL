@@ -28,7 +28,6 @@ export default class Main extends React.Component{
   }
 
   onChange() {
-    console.log("4. In the view");
     this.setState(getAppState());
   }
 
