@@ -31,13 +31,13 @@ MongoClient.connect(dbUrl, (err, database) => {
   app.listen(3000, () => console.log('listening on port 3000'));
 });
 
-app.get('/data/links', (req, res) => {
-  db.collection("links").find({}).toArray((err, links) => {
-    if (err) {
-      console.log("db collection error:", err);
-      throw err;
-    }
-
-    res.json(links);
-  });
-});
+// app.get('/data/links', (req, res) => {
+//   db.collection("links").find({}).toArray((err, links) => {
+//     if (err) {
+//       console.log("db collection error:", err);
+//       throw err;
+//     }
+//
+//     res.json(links);
+//   });
+// });
