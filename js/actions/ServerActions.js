@@ -3,7 +3,6 @@ import {ActionTypes} from "../Constants";
 
 let ServerActions = {
   receiveLinks(links) {
-    console.log('2 in ServerActions');
     AppDispatcher.dispatch({
       actionType: ActionTypes.RECEIVE_LINKS,
       links
