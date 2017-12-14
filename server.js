@@ -2,6 +2,7 @@ import express from 'express';
 import {MongoClient} from 'mongodb';
 import schema from './data/schema';
 import GraphQLHTTP from 'express-graphql';
+import { log } from 'util';
 
 let app = express();
 
@@ -9,35 +10,22 @@ let app = express();
 // via db user which should be created, note: not the username/password used to login to mlab.
 
 let dbUrl = 'mongodb://levijs:14DianaDrive@ds137826.mlab.com:37826/levijs';
-let db;
-
 app.use(express.static('public'));
 
+// use async with await
 
-MongoClient.connect(dbUrl, (err, database) => {
-  if (err) {
-    console.log('cound not connect');
-    throw err;
+(async() => {
+  let db;
+  try {
+    db = await MongoClient.connect(dbUrl);
+    app.use('/graphql', GraphQLHTTP({
+      schema: schema(db),
+      graphiql: true
+    }));
+  } catch(e) {
+    console.log("err to connect to mongo db with:", e)
+    throw e;
   }
 
-  db = database;
-
-  // to make sure schema file has access to mongodb
-  app.use('/graphql', GraphQLHTTP({
-    schema: schema(db),
-    graphiql: true
-  }))
-
-  app.listen(3000, () => console.log('listening on port 3000'));
-});
-
-// app.get('/data/links', (req, res) => {
-//   db.collection("links").find({}).toArray((err, links) => {
-//     if (err) {
-//       console.log("db collection error:", err);
-//       throw err;
-//     }
-//
-//     res.json(links);
-//   });
-// });
+  app.listen(3000, () => console.log("listening on port 3000"));
+})();
